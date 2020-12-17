@@ -33,11 +33,9 @@ int main() {
 		//a critical place. when a thread searches for an account in this 
 		account* the_account;
 		int ID1 = std::stoi(command_sep[1]);
-		std::cout << "entering 'for' ";
 		std::string basic = command_sep[1];
 		for (account index : account_vec) {
 			if (flag2 == 0) {
-				std::cout << "entered once ";
 				flag2++;
 			}
 
@@ -58,14 +56,12 @@ int main() {
 			return 1;
 		}
 		flag = 0;
-		std::cout << "got here 1" << std::endl;
 		//here we know that the account exists, and we search for its command
 		if (*command=='O') {
 			std::cout << "Error " << "ATM ID TO HERE PLEASE" << ": Your transaction failed - account with same id exists";
 			std::cout << std::endl;
 			return 1;
 		}
-		std::cout << "got here 2" << std::endl;
 		if (*command == 'D') {
 			int password = std::stoi(command_sep[2]);
 			int amount = std::stoi(command_sep[3]);
@@ -74,7 +70,6 @@ int main() {
 			else { return 1; }
 		}
 		if (*command == 'B') {
-			std::cout << "entering the B function" << std::endl;
 			int password = std::stoi(command_sep[2]);
 			if (!Balance(*the_account, password)) {
 			}
