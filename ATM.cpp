@@ -23,6 +23,8 @@ void * ATM::openAccout(void *args)
 	argsPtr->globalLock->leaveRead();
 	if(myAccindex != -1) {
 		argsPtr->logObj->logAccountOpen(ACCOUNT_EXISTS,args);
+		delete argsPtr->targetAccount->accountLock;
+		free(argsPtr->targetAccount);
 		int *ret = new int();
 		*ret = RET_FAILURE;
 		return (void *) ret;
@@ -54,6 +56,8 @@ void * ATM::openAccout(void *args)
 
 			argsPtr->globalLock->leaveWrite();
 			log->logAccountOpen(SUCCESS, argsPtr);
+			delete argsPtr->targetAccount->accountLock;
+			free(argsPtr->targetAccount);
 			int *ret = new int();
 			*ret = RET_SUCESS;
 			return (void *) ret;
