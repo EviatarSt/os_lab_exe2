@@ -21,7 +21,6 @@ Logger::Logger()
 
 Logger::~Logger()
 {
-    pthread_mutex_destroy(loggerLock);
     logFileStream.close();
     delete (&logFilePath);
 
