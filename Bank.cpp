@@ -13,7 +13,9 @@
 // here we will store all the threads
 std::vector<pthread_t> threadsLst = std::vector<pthread_t>();
 // allocated threads-related memory(..arguments).
-std::vector<void *> allocated_mem = std::vector<void *>();
+std::vector<BankOpArgs*> BankArgs_mem = std::vector<BankOpArgs*>();
+std::vector<threadArgs*> ThreadArgs_mem = std::vector<threadArgs*>();
+std::vector<snapshotArgs*> SnapArgs_mem = std::vector<snapshotArgs*>();
 
 
 //declaring functions in the main. may be moved.
@@ -175,7 +177,7 @@ int main(int argc, char *argv[]) {
 			bankTimer = 0;
 			BankOpArgs *bankArgs = (BankOpArgs *)malloc(sizeof(BankOpArgs));
 
-			allocated_mem.push_back((void *)bankArgs);
+			BankArgs_mem.push_back(bankArgs);
 
 			bankArgs->accounts_vec = &account_vec;
 			bankArgs->bankAccount = &bankBalance;
@@ -191,6 +193,7 @@ int main(int argc, char *argv[]) {
 		{
 			snapshotTimer = 0;
 			snapshotArgs *args = (snapshotArgs *)malloc(sizeof(snapshotArgs));
+			SnapArgs_mem.push_back(args);
 			args->accounts_vec = &account_vec;
 			args->bankBalance = &bankBalance;
 			pthread_t thread;
@@ -216,10 +219,27 @@ int main(int argc, char *argv[]) {
 			}
 		}
 		*/
+
 		
 	}
+	for (auto& element : BankArgs_mem) {
+		free(element);
+	}
 
+	for (auto& element : ThreadArgs_mem) {
+		free(element);
+	}
+	for (auto& element : SnapArgs_mem) {
+		free(element);
+	}
+	for (auto& element : account_vec) {
+		//fix here
+		delete element.accountLock;
+		account* temp = &element;
+		free(temp);
+	}
 	delete logger;
+	delete globalLock;
 
 	auto end = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_seconds = end - start;
@@ -284,7 +304,7 @@ void executeAtmOperation(std::vector<account>& account_vec,
 	// arguments that will be sent to each thread.
 	// TODO: free the args after thread dies.
 	threadArgs *args = (threadArgs *)malloc(sizeof(threadArgs));
-	allocated_mem.push_back((void *)args);
+	ThreadArgs_mem.push_back(args);
 	
 	args->logObj = logger;
 	args->atmID = currentAtmMachine + 1;
